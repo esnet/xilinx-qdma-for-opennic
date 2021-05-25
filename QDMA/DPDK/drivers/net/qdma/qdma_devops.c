@@ -478,7 +478,7 @@ int qdma_dev_rx_queue_setup(struct rte_eth_dev *dev, uint16_t rx_queue_id,
 	/* Find Threshold index */
 	rxq->threshidx = index_of_array(qdma_dev->g_c2h_cnt_th,
 					QDMA_NUM_C2H_COUNTERS,
-					rx_conf->rx_thresh.wthresh);
+					rx_conf->rx_thresh.wthresh + 2);
 	if (rxq->threshidx < 0) {
 		PMD_DRV_LOG(WARNING, "Expected Threshold %d not found,"
 				" using the value %d at index 7\n",
