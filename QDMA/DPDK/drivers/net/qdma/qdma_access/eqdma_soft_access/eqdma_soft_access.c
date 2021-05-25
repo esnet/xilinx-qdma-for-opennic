@@ -2442,7 +2442,7 @@ int eqdma_set_default_global_csr(void *dev_hndl)
 		80, 96, 112, 128, 144, 160, 176, 192};
 	uint32_t buf_sz[QDMA_NUM_C2H_BUFFER_SIZES] = {4096, 256, 512, 1024,
 		2048, 3968, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 8192,
-		9018, 16384};
+		10112, 16384};
 	struct qdma_dev_attributes dev_cap;
 	uint32_t eqdma_ip_version;
 
