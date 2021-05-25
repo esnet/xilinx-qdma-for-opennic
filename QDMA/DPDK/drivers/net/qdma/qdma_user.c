@@ -58,12 +58,10 @@ int qdma_ul_extract_st_cmpt_info(void *ul_cmpt_entry, void *cmpt_info)
 	cmpt_desc = (union qdma_ul_st_cmpt_ring *)(ul_cmpt_entry);
 	cmpt_data = (union qdma_ul_st_cmpt_ring *)(cmpt_info);
 
-	if (unlikely(cmpt_desc->err || cmpt_desc->data_frmt))
+	if (unlikely(cmpt_desc->err))
 		return -1;
 
 	cmpt_data->data = cmpt_desc->data;
-	if (unlikely(!cmpt_desc->desc_used))
-		cmpt_data->length = 0;
 
 	return 0;
 }
@@ -79,7 +77,7 @@ int qdma_ul_extract_st_cmpt_info(void *ul_cmpt_entry, void *cmpt_info)
  */
 uint16_t qdma_ul_get_cmpt_pkt_len(void *ul_cmpt_entry)
 {
-	return ((union qdma_ul_st_cmpt_ring *)ul_cmpt_entry)->length;
+	return ((union qdma_ul_st_cmpt_ring *)ul_cmpt_entry)->pkt_len;
 }
 
 /**
@@ -279,7 +277,7 @@ int qdma_ul_process_immediate_data(void *cmpt_entry, uint16_t cmpt_desc_len,
 	struct qdma_ul_cmpt_ring *cmpt_desc =
 			(struct qdma_ul_cmpt_ring *)(cmpt_entry);
 
-	if (unlikely(cmpt_desc->err || cmpt_desc->data_frmt))
+	if (unlikely(cmpt_desc->err))
 		return -1;
 
 	cmpt_buff_ptr = (char *)cmpt_buff;
