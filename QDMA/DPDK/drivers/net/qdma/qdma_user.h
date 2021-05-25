@@ -49,40 +49,15 @@
   * This structure is specific for the example design.
   * Processing of this ring happens in qdma_rxtx.c.
   */
-union qdma_ul_st_cmpt_ring {
+union __attribute__ ((packed)) qdma_ul_st_cmpt_ring {
 	volatile uint64_t data;
-	struct {
-		/* For 2018.2 IP, this field determines the
-		 * Standard or User format of completion entry
-		 */
-		volatile uint32_t	data_frmt:1;
-
-		/* This field inverts every time PIDX wraps
-		 * the completion ring
-		 */
-		volatile uint32_t	color:1;
-
-		/* Indicates that C2H engine encountered
-		 * a descriptor error
-		 */
-		volatile uint32_t	err:1;
-
-		/* Indicates that the completion packet
-		 * consumes descriptor in C2H ring
-		 */
-		volatile uint32_t	desc_used:1;
-
-		/* Indicates length of the data packet */
-		volatile uint32_t	length:16;
-
-		/* Reserved field */
-		volatile uint32_t	user_rsv:4;
-
-		/* User logic defined data of
-		 * length based on CMPT entry
-		 * length
-		 */
-		volatile uint8_t	user_def[];
+        struct __attribute__ ((packed)) {
+		volatile uint32_t rsvd:1;
+		volatile uint32_t color:1;
+		volatile uint32_t err:1;
+		volatile uint32_t rsvd2:29;
+		volatile uint32_t pkt_len:16;
+		volatile uint32_t pkt_id:16;
 	};
 };
 
