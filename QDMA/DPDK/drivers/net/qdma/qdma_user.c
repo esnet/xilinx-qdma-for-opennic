@@ -169,34 +169,12 @@ int qdma_ul_update_st_h2c_desc(void *qhndl, uint64_t q_offloads,
 {
 	(void)q_offloads;
 	struct qdma_ul_st_h2c_desc *desc_info;
-	int nsegs = mb->nb_segs;
-	int pkt_segs = nsegs;
 
-	if (nsegs == 1) {
-		desc_info = get_st_h2c_desc(qhndl);
-		desc_info->len = rte_pktmbuf_data_len(mb);
-		desc_info->pld_len = desc_info->len;
-		desc_info->src_addr = mb->buf_iova + mb->data_off;
-		desc_info->flags = (S_H2C_DESC_F_SOP | S_H2C_DESC_F_EOP);
-		desc_info->cdh_flags = 0;
-	} else {
-		while (nsegs && mb) {
-			desc_info = get_st_h2c_desc(qhndl);
+	desc_info = get_st_h2c_desc(qhndl);
+	desc_info->len = rte_pktmbuf_data_len(mb);
+	desc_info->meta_pkt_len = desc_info->len;
+	desc_info->src_addr = mb->buf_iova + mb->data_off;
 
-			desc_info->len = rte_pktmbuf_data_len(mb);
-			desc_info->pld_len = desc_info->len;
-			desc_info->src_addr = mb->buf_iova + mb->data_off;
-			desc_info->flags = 0;
-			if (nsegs == pkt_segs)
-				desc_info->flags |= S_H2C_DESC_F_SOP;
-			if (nsegs == 1)
-				desc_info->flags |= S_H2C_DESC_F_EOP;
-			desc_info->cdh_flags = 0;
-
-			nsegs--;
-			mb = mb->next;
-		}
-	}
 	return 0;
 }
 
