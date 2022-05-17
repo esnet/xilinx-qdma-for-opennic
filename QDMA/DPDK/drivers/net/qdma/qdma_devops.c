@@ -942,9 +942,9 @@ void qdma_txq_pidx_update(void *arg)
 
 
 
-void qdma_dev_tx_queue_release(void *tqueue)
+void qdma_dev_tx_queue_release(struct rte_eth_dev * dev, uint16_t qid)
 {
-	struct qdma_tx_queue *txq = (struct qdma_tx_queue *)tqueue;
+	struct qdma_tx_queue *txq = dev->data->tx_queues[qid];
 	struct qdma_pci_dev *qdma_dev;
 
 	if (txq != NULL) {
@@ -969,9 +969,9 @@ void qdma_dev_tx_queue_release(void *tqueue)
 	}
 }
 
-void qdma_dev_rx_queue_release(void *rqueue)
+void qdma_dev_rx_queue_release(struct rte_eth_dev * dev, uint16_t qid)
 {
-	struct qdma_rx_queue *rxq = (struct qdma_rx_queue *)rqueue;
+	struct qdma_rx_queue *rxq = dev->data->rx_queues[qid];
 	struct qdma_pci_dev *qdma_dev = NULL;
 
 	if (rxq != NULL) {

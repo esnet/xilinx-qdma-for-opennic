@@ -474,7 +474,7 @@ int qdma_dev_stop(struct rte_eth_dev *dev);
  *
  * @ingroup dpdk_devops_func
  */
-void qdma_dev_rx_queue_release(void *rqueue);
+void qdma_dev_rx_queue_release(struct rte_eth_dev * dev, uint16_t qid);
 
 /**
  * DPDK callback to release a Tx queue.
@@ -486,7 +486,7 @@ void qdma_dev_rx_queue_release(void *rqueue);
  *
  * @ingroup dpdk_devops_func
  */
-void qdma_dev_tx_queue_release(void *tqueue);
+void qdma_dev_tx_queue_release(struct rte_eth_dev * dev, uint16_t qid);
 
 /**
  * DPDK callback to close the device.
