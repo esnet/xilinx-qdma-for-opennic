@@ -333,7 +333,7 @@ int qdma_dev_queue_stats_mapping(struct rte_eth_dev *dev,
  * @ingroup dpdk_devops_func
  */
 uint32_t
-qdma_dev_rx_queue_count(struct rte_eth_dev *dev, uint16_t rx_queue_id);
+qdma_dev_rx_queue_count(void *rx_queue);
 
 /**
  * DPDK callback to check the status of a Rx descriptor in the queue

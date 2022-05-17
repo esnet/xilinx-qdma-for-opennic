@@ -534,7 +534,20 @@ static int process_cmpt_ring(struct qdma_rx_queue *rxq,
 	return 0;
 }
 
-static uint32_t rx_queue_count(void *rx_queue)
+/**
+ * DPDK callback to get the number of used descriptors of a rx queue.
+ *
+ * @param dev
+ *   Pointer to Ethernet device structure.
+ * @param rx_queue_id
+ *   The RX queue on the Ethernet device for which information will be
+ *   retrieved
+ *
+ * @return
+ *   The number of used descriptors in the specific queue.
+ */
+uint32_t
+qdma_dev_rx_queue_count(void *rx_queue)
 {
 	struct qdma_rx_queue *rxq = rx_queue;
 	struct wb_status *wb_status;
@@ -587,24 +600,6 @@ static uint32_t rx_queue_count(void *rx_queue)
 }
 
 /**
- * DPDK callback to get the number of used descriptors of a rx queue.
- *
- * @param dev
- *   Pointer to Ethernet device structure.
- * @param rx_queue_id
- *   The RX queue on the Ethernet device for which information will be
- *   retrieved
- *
- * @return
- *   The number of used descriptors in the specific queue.
- */
-uint32_t
-qdma_dev_rx_queue_count(struct rte_eth_dev *dev, uint16_t rx_queue_id)
-{
-	return rx_queue_count(dev->data->rx_queues[rx_queue_id]);
-}
-
-/**
  * DPDK callback to check the status of a Rx descriptor in the queue.
  *
  * @param rx_queue
@@ -636,7 +631,7 @@ qdma_dev_rx_descriptor_status(void *rx_queue, uint16_t offset)
 	if (offset == (rxq->nb_rx_desc - 2))
 		return RTE_ETH_RX_DESC_UNAVAIL;
 
-	desc_used_count = rx_queue_count(rxq);
+	desc_used_count = qdma_dev_rx_queue_count(rxq);
 	if (offset < desc_used_count)
 		return RTE_ETH_RX_DESC_DONE;
 
