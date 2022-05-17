@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <rte_ethdev_pci.h>
+#include <ethdev_pci.h>
 #include "qdma.h"
 #include "qdma_mbox.h"
 #include <rte_malloc.h>

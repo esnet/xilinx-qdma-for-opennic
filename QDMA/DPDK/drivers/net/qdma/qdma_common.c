@@ -33,7 +33,7 @@
 #include <stdint.h>
 #include <rte_malloc.h>
 #include <rte_common.h>
-#include <rte_ethdev_pci.h>
+#include <ethdev_pci.h>
 #include <rte_cycles.h>
 #include <rte_kvargs.h>
 #include "qdma.h"

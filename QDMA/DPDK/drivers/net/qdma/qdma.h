@@ -36,7 +36,7 @@
 #include <stdbool.h>
 #include <rte_dev.h>
 #include <rte_ethdev.h>
-#include <rte_ethdev_driver.h>
+#include <ethdev_driver.h>
 #include <rte_spinlock.h>
 #include <rte_log.h>
 #include <rte_cycles.h>
