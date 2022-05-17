@@ -357,7 +357,7 @@ int qdma_mbox_init(struct rte_eth_dev *dev)
 	struct qdma_pci_dev *qdma_dev = dev->data->dev_private;
 	struct rte_pci_device *pci_dev = RTE_ETH_DEV_TO_PCI(dev);
 	uint32_t raw_data[MBOX_MSG_REG_MAX] = {0};
-	struct rte_intr_handle *intr_handle = &pci_dev->intr_handle;
+	struct rte_intr_handle *intr_handle = pci_dev->intr_handle;
 
 	if (!qdma_dev->is_vf) {
 		int i;
@@ -394,7 +394,7 @@ void qdma_mbox_uninit(struct rte_eth_dev *dev)
 {
 	struct qdma_pci_dev *qdma_dev = dev->data->dev_private;
 	struct rte_pci_device *pci_dev = RTE_ETH_DEV_TO_PCI(dev);
-	struct rte_intr_handle *intr_handle = &pci_dev->intr_handle;
+	struct rte_intr_handle *intr_handle = pci_dev->intr_handle;
 
 	do {
 		rte_spinlock_lock(&qdma_dev->mbox.list_lock);
