@@ -1074,9 +1074,9 @@ int qdma_dev_start(struct rte_eth_dev *dev)
 int qdma_dev_link_update(struct rte_eth_dev *dev,
 				__rte_unused int wait_to_complete)
 {
-	dev->data->dev_link.link_status = ETH_LINK_UP;
-	dev->data->dev_link.link_duplex = ETH_LINK_FULL_DUPLEX;
-	dev->data->dev_link.link_speed = ETH_SPEED_NUM_100G;
+	dev->data->dev_link.link_status = RTE_ETH_LINK_UP;
+	dev->data->dev_link.link_duplex = RTE_ETH_LINK_FULL_DUPLEX;
+	dev->data->dev_link.link_speed = RTE_ETH_SPEED_NUM_100G;
 	PMD_DRV_LOG(INFO, "Link update done\n");
 	return 0;
 }
