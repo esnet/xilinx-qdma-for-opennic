@@ -1391,7 +1391,7 @@ qdma_set_tx_function(struct rte_eth_dev *dev)
 {
 	struct qdma_pci_dev *qdma_dev = dev->data->dev_private;
 
-	if (rte_vect_get_max_simd_bitwidth() >= RTE_VECT_SIMD_128) {
+	if (false && (rte_vect_get_max_simd_bitwidth() >= RTE_VECT_SIMD_128)) {
 		PMD_DRV_LOG(DEBUG, "Using Vector Tx (port %d).",
 			dev->data->port_id);
 		qdma_dev->tx_vec_allowed = true;
@@ -1408,7 +1408,7 @@ qdma_set_rx_function(struct rte_eth_dev *dev)
 {
 	struct qdma_pci_dev *qdma_dev = dev->data->dev_private;
 
-	if (rte_vect_get_max_simd_bitwidth() >= RTE_VECT_SIMD_128) {
+	if (false && (rte_vect_get_max_simd_bitwidth() >= RTE_VECT_SIMD_128)) {
 		PMD_DRV_LOG(DEBUG, "Using Vector Rx (port %d).",
 			dev->data->port_id);
 		qdma_dev->rx_vec_allowed = true;
