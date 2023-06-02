@@ -1939,6 +1939,16 @@ qdma_dev_txq_info_get(struct rte_eth_dev *dev, uint16_t tx_queue_id,
 
 }
 
+int
+qdma_dev_mtu_set(__rte_unused struct rte_eth_dev *dev, uint16_t mtu)
+{
+	if (mtu <= 9800) {
+		return 0;
+	} else {
+		return -EINVAL;
+	}
+}
+
 static struct eth_dev_ops qdma_eth_dev_ops = {
 	.dev_configure            = qdma_dev_configure,
 	.dev_infos_get            = qdma_dev_infos_get,
@@ -1962,6 +1972,7 @@ static struct eth_dev_ops qdma_eth_dev_ops = {
 	.stats_reset              = qdma_dev_stats_reset,
 	.rxq_info_get             = qdma_dev_rxq_info_get,
 	.txq_info_get             = qdma_dev_txq_info_get,
+	.mtu_set                  = qdma_dev_mtu_set,
 };
 
 void qdma_dev_ops_init(struct rte_eth_dev *dev)

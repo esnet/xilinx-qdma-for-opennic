@@ -181,6 +181,9 @@ void
 qdma_dev_txq_info_get(struct rte_eth_dev *dev, uint16_t tx_queue_id,
 		      struct rte_eth_txq_info *qinfo);
 
+int
+qdma_dev_mtu_set(__rte_unused struct rte_eth_dev *dev, uint16_t mtu);
+
 /**
  * DPDK callback to start the device.
  *
