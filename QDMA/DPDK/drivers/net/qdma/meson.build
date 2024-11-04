@@ -32,6 +32,7 @@
 cflags += ['-DRTE_LIBRTE_QDMA_PMD']
 cflags += ['-DDMA_BRAM_SIZE=524288']
 cflags += ['-DTHROUGHPUT_MEASUREMENT']
+cflags += ['-DRTE_LIBRTE_QDMA_DEBUG_DRIVER']
 
 # Use QDMA_DPDK_22_11 compiler flag for DPDK v22.11
 # Use QDMA_DPDK_21_11 compiler flag for DPDK v21.11
