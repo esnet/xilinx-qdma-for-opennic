@@ -133,6 +133,11 @@ struct __attribute__ ((packed)) qdma_ul_st_c2h_desc
 	uint64_t	dst_addr;
 };
 
+#ifndef QDMA_FOR_OPENNIC
+#define S_H2C_DESC_F_SOP		1
+#define S_H2C_DESC_F_EOP		2
+#endif
+
 /* pld_len and flags members are part of custom descriptor format needed
  * by example design for ST loopback and desc bypass
  */
@@ -140,11 +145,19 @@ struct __attribute__ ((packed)) qdma_ul_st_c2h_desc
 /** ST H2C Descriptor **/
 struct __attribute__ ((packed)) qdma_ul_st_h2c_desc
 {
+#ifdef QDMA_FOR_OPENNIC
 	volatile uint16_t	meta_pkt_len;
 	volatile uint16_t	meta_unused;
 	volatile uint16_t	len;
 	volatile uint16_t	rsvd;
 	volatile uint64_t	src_addr;
+#else
+	volatile uint16_t	cdh_flags;
+	volatile uint16_t	pld_len;
+	volatile uint16_t	len;
+	volatile uint16_t	flags;
+	volatile uint64_t	src_addr;
+#endif
 };
 
 /** MM Descriptor **/
