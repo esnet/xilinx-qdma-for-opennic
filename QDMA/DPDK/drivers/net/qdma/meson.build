@@ -38,6 +38,11 @@ cflags += ['-DTHROUGHPUT_MEASUREMENT']
 # Use QDMA_DPDK_20_11 compiler flag for DPDK v20.11
 cflags += ['-DQDMA_DPDK_22_11']
 
+# Enable changes to make QDMA driver compatible with the opennic customizations
+if get_option('qdma_for_opennic')
+    cflags += ['-DQDMA_FOR_OPENNIC']
+endif
+
 includes += include_directories('.')
 includes += include_directories('qdma_access')
 includes += include_directories('qdma_access/qdma_soft_access')
