@@ -132,6 +132,10 @@ int qdma_extract_st_cmpt_info(void *ul_cmpt_entry, void *cmpt_info)
 	cmpt_data = (union qdma_ul_st_cmpt_ring *)(cmpt_info);
 
 	cmpt_data->data = cmpt_desc->data;
+#ifndef QDMA_FOR_OPENNIC
+	if (unlikely(!cmpt_desc->desc_used))
+		cmpt_data->length = 0;
+#endif
 
 	return 0;
 }
