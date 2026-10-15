@@ -59,10 +59,18 @@ int qdma_ul_extract_st_cmpt_info(void *ul_cmpt_entry, void *cmpt_info)
 	cmpt_desc = (union qdma_ul_st_cmpt_ring *)(ul_cmpt_entry);
 	cmpt_data = (union qdma_ul_st_cmpt_ring *)(cmpt_info);
 
+#ifdef QDMA_FOR_OPENNIC
 	if (unlikely(cmpt_desc->err))
+#else
+	if (unlikely(cmpt_desc->err || cmpt_desc->data_frmt))
+#endif
 		return -1;
 
 	cmpt_data->data = cmpt_desc->data;
+#ifndef QDMA_FOR_OPENNIC
+	if (unlikely(!cmpt_desc->desc_used))
+		cmpt_data->length = 0;
+#endif
 
 	return 0;
 }
@@ -78,7 +86,11 @@ int qdma_ul_extract_st_cmpt_info(void *ul_cmpt_entry, void *cmpt_info)
  */
 uint16_t qdma_ul_get_cmpt_pkt_len(void *ul_cmpt_entry)
 {
+#ifdef QDMA_FOR_OPENNIC
 	return ((union qdma_ul_st_cmpt_ring *)ul_cmpt_entry)->pkt_len;
+#else
+	return ((union qdma_ul_st_cmpt_ring *)ul_cmpt_entry)->length;
+#endif
 }
 
 /**
@@ -171,11 +183,42 @@ int qdma_ul_update_st_h2c_desc(void *qhndl, uint64_t q_offloads,
 {
 	(void)q_offloads;
 	struct qdma_ul_st_h2c_desc *desc_info;
-
+#ifdef QDMA_FOR_OPENNIC
 	desc_info = get_st_h2c_desc(qhndl);
 	desc_info->len = rte_pktmbuf_data_len(mb);
 	desc_info->meta_pkt_len = desc_info->len;
 	desc_info->src_addr = mb->buf_iova + mb->data_off;
+#else
+	int nsegs = mb->nb_segs;
+	int pkt_segs = nsegs;
+
+	if (nsegs == 1) {
+		desc_info = get_st_h2c_desc(qhndl);
+		desc_info->len = rte_pktmbuf_data_len(mb);
+		desc_info->pld_len = desc_info->len;
+		desc_info->src_addr = mb->buf_iova + mb->data_off;
+		desc_info->flags = (S_H2C_DESC_F_SOP | S_H2C_DESC_F_EOP);
+		desc_info->cdh_flags = 0;
+		return 0;
+	}
+
+	while (nsegs && mb) {
+		desc_info = get_st_h2c_desc(qhndl);
+
+		desc_info->len = rte_pktmbuf_data_len(mb);
+		desc_info->pld_len = desc_info->len;
+		desc_info->src_addr = mb->buf_iova + mb->data_off;
+		desc_info->flags = 0;
+
+		desc_info->flags |= (nsegs == pkt_segs) ? S_H2C_DESC_F_SOP : 0;
+		desc_info->flags |= (nsegs == 1) ? S_H2C_DESC_F_EOP : 0;
+
+		desc_info->cdh_flags = 0;
+
+		nsegs--;
+		mb = mb->next;
+	}
+#endif
 
 	return 0;
 }
@@ -257,7 +300,11 @@ int qdma_ul_process_immediate_data(void *cmpt_entry, uint16_t cmpt_desc_len,
 	struct qdma_ul_cmpt_ring *cmpt_desc =
 			(struct qdma_ul_cmpt_ring *)(cmpt_entry);
 
+#ifdef QDMA_FOR_OPENNIC
 	if (unlikely(cmpt_desc->err))
+#else
+	if (unlikely(cmpt_desc->err || cmpt_desc->data_frmt))
+#endif
 		return -1;
 
 	cmpt_buff_ptr = (char *)cmpt_buff;

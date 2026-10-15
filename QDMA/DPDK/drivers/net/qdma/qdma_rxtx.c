@@ -132,6 +132,10 @@ int qdma_extract_st_cmpt_info(void *ul_cmpt_entry, void *cmpt_info)
 	cmpt_data = (union qdma_ul_st_cmpt_ring *)(cmpt_info);
 
 	cmpt_data->data = cmpt_desc->data;
+#ifndef QDMA_FOR_OPENNIC
+	if (unlikely(!cmpt_desc->desc_used))
+		cmpt_data->length = 0;
+#endif
 
 	return 0;
 }
@@ -1391,7 +1395,11 @@ qdma_set_tx_function(struct rte_eth_dev *dev)
 {
 	struct qdma_pci_dev *qdma_dev = dev->data->dev_private;
 
-	if (false && (rte_vect_get_max_simd_bitwidth() >= RTE_VECT_SIMD_128)) {
+#ifdef QDMA_FOR_OPENNIC
+	if (false && rte_vect_get_max_simd_bitwidth() >= RTE_VECT_SIMD_128) {
+#else
+	if (rte_vect_get_max_simd_bitwidth() >= RTE_VECT_SIMD_128) {
+#endif
 		PMD_DRV_LOG(DEBUG, "Using Vector Tx (port %d).",
 			dev->data->port_id);
 		qdma_dev->tx_vec_allowed = true;
@@ -1408,7 +1416,11 @@ qdma_set_rx_function(struct rte_eth_dev *dev)
 {
 	struct qdma_pci_dev *qdma_dev = dev->data->dev_private;
 
-	if (false && (rte_vect_get_max_simd_bitwidth() >= RTE_VECT_SIMD_128)) {
+#ifdef QDMA_FOR_OPENNIC
+	if (false && rte_vect_get_max_simd_bitwidth() >= RTE_VECT_SIMD_128) {
+#else
+	if (rte_vect_get_max_simd_bitwidth() >= RTE_VECT_SIMD_128) {
+#endif
 		PMD_DRV_LOG(DEBUG, "Using Vector Rx (port %d).",
 			dev->data->port_id);
 		qdma_dev->rx_vec_allowed = true;

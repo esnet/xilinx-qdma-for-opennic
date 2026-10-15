@@ -49,9 +49,10 @@
   * This structure is specific for the example design.
   * Processing of this ring happens in qdma_rxtx.c.
   */
+#ifdef QDMA_FOR_OPENNIC
 union __attribute__ ((packed)) qdma_ul_st_cmpt_ring {
 	volatile uint64_t data;
-        struct __attribute__ ((packed)) {
+	struct __attribute__ ((packed)) {
 		volatile uint32_t rsvd:1;
 		volatile uint32_t color:1;
 		volatile uint32_t err:1;
@@ -60,6 +61,44 @@ union __attribute__ ((packed)) qdma_ul_st_cmpt_ring {
 		volatile uint32_t pkt_id:16;
 	};
 };
+#else
+union qdma_ul_st_cmpt_ring {
+	volatile uint64_t data;
+	struct {
+		/* For 2018.2 IP, this field determines the
+		 * Standard or User format of completion entry
+		 */
+		volatile uint32_t	data_frmt:1;
+
+		/* This field inverts every time PIDX wraps
+		 * the completion ring
+		 */
+		volatile uint32_t	color:1;
+
+		/* Indicates that C2H engine encountered
+		 * a descriptor error
+		 */
+		volatile uint32_t	err:1;
+
+		/* Indicates that the completion packet
+		 * consumes descriptor in C2H ring
+		 */
+		volatile uint32_t	desc_used:1;
+
+		/* Indicates length of the data packet */
+		volatile uint32_t	length:16;
+
+		/* Reserved field */
+		volatile uint32_t	user_rsv:4;
+
+		/* User logic defined data of
+		 * length based on CMPT entry
+		 * length
+		 */
+		volatile uint8_t	user_def[];
+	};
+};
+#endif
 
 
  /**
@@ -94,6 +133,11 @@ struct __attribute__ ((packed)) qdma_ul_st_c2h_desc
 	uint64_t	dst_addr;
 };
 
+#ifndef QDMA_FOR_OPENNIC
+#define S_H2C_DESC_F_SOP		1
+#define S_H2C_DESC_F_EOP		2
+#endif
+
 /* pld_len and flags members are part of custom descriptor format needed
  * by example design for ST loopback and desc bypass
  */
@@ -101,11 +145,19 @@ struct __attribute__ ((packed)) qdma_ul_st_c2h_desc
 /** ST H2C Descriptor **/
 struct __attribute__ ((packed)) qdma_ul_st_h2c_desc
 {
+#ifdef QDMA_FOR_OPENNIC
 	volatile uint16_t	meta_pkt_len;
 	volatile uint16_t	meta_unused;
 	volatile uint16_t	len;
 	volatile uint16_t	rsvd;
 	volatile uint64_t	src_addr;
+#else
+	volatile uint16_t	cdh_flags;
+	volatile uint16_t	pld_len;
+	volatile uint16_t	len;
+	volatile uint16_t	flags;
+	volatile uint64_t	src_addr;
+#endif
 };
 
 /** MM Descriptor **/
